@@ -1,5 +1,7 @@
 # Capybara
 
+![Đàn chuột lang nước Capybara đang thư giãn trong hồ nước nóng](https://www.tokyoweekender.com/wp-content/uploads/2025/01/rotenburo.jpg)
+
 > 📖 **Đến để học, đi để thành thạo.** - *Come to learn, go to master.* 🌱
 
 *Trong một thế giới luôn thúc giục chúng ta ra biển lớn, Capybara tin rằng những bài học sâu sắc nhất lại đến từ những dòng sông, những hồ nước tĩnh lặng. Chúng tôi không cố gắng tạo ra một đại dương xanh hay đỏ vô tận, chúng tôi xây dựng một cộng đồng ven hồ - nơi bạn có thể an toàn để thử, để sai, để học hỏi, để suy ngẫm, và để kết nối thực sự. Bởi vì, không phải ai cũng thích ra biển lớn, và điều đó hoàn toàn ổn.*
