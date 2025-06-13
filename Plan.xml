@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<developmentPlan project="Capybara">
+    <introduction>
+        Đây là một kế hoạch sống, có thể và nên được điều chỉnh. Nó được chia thành các giai đoạn MVP rõ ràng, mỗi giai đoạn tập trung vào việc kiểm chứng một giả thuyết cốt lõi.
+    </introduction>
+
+    <techStack>
+        <title>I. Nền tảng Kỹ thuật (Tech Stack &amp; Architecture)</title>
+        <goal>Mục tiêu là chọn một bộ công cụ linh hoạt, dễ phát triển cho đội ngũ nhỏ và có khả năng mở rộng.</goal>
+        <item type="Ngôn ngữ/Framework">
+            <frontend>React (hoặc Next.js để tối ưu SEO và hiệu suất ban đầu).</frontend>
+            <backend>Python với FastAPI.</backend>
+            <reason>Tận dụng thế mạnh của Python cho AI/ML, sự quen thuộc của lập trình viên, và chuẩn bị cho việc tích hợp các agent framework như Langflow và LangGraph trong tương lai.</reason>
+        </item>
+        <item type="Cơ sở dữ liệu">
+            <database>MongoDB (với Motor hoặc Beanie ODM).</database>
+            <reason>Cấu trúc linh hoạt của NoSQL rất phù hợp cho giai đoạn đầu, nơi mô hình dữ liệu có thể thay đổi. Đặc biệt tốt cho việc lưu trữ nội dung đa dạng do người dùng tạo.</reason>
+        </item>
+        <item type="Xác thực">
+            <method>JSON Web Tokens (JWT)</method>
+        </item>
+        <item type="Triển khai (Deployment)">
+            <frontend>Vercel / Netlify (Tích hợp hoàn hảo với Next.js/React, có gói miễn phí hào phóng).</frontend>
+            <backendAndDB>Render / Heroku / Railway (Dễ dàng triển khai, quản lý).</backendAndDB>
+        </item>
+        <item type="Gọi AI">
+            <service>Sử dụng API của các nhà cung cấp LLM (ví dụ: OpenAI, Google Gemini) với các mô hình tối ưu chi phí.</service>
+        </item>
+    </techStack>
+
+    <dataSchema>
+        <title>II. Mô hình Dữ liệu Cốt lõi (Core Database Schema)</title>
+        <description>Đây là xương sống của ứng dụng.</description>
+        <collection name="users">
+            <code>
+            {
+              "_id": "ObjectId",
+              "email": "String (unique, required)",
+              "password": "String (hashed, required)",
+              "username": "String (unique, required)",
+              "avatar": "String (URL)",
+              "createdAt": "Date"
+            }
+            </code>
+        </collection>
+        <collection name="lessons">
+            <description>Nội dung do cộng đồng tạo</description>
+            <code>
+            {
+              "_id": "ObjectId",
+              "title": "String",
+              "description": "String",
+              "authorId": "ObjectId (ref: 'users')",
+              "cefrLevel": "String ('A1', 'A2', 'B1', ...)",
+              "tags": ["String"],
+              "cards": [{
+                "cardId": "ObjectId",
+                "front": "String (e.g., a concept, a word)",
+                "back": "String (e.g., the explanation, the definition)"
+              }],
+              "likes": ["ObjectId (ref: 'users')"],
+              "createdAt": "Date",
+              "updatedAt": "Date"
+            }
+            </code>
+        </collection>
+        <collection name="feedback">
+            <code>
+            {
+              "_id": "ObjectId",
+              "lessonId": "ObjectId (ref: 'lessons')",
+              "userId": "ObjectId (ref: 'users')",
+              "comment": "String",
+              "type": "String ('suggestion', 'praise')",
+              "createdAt": "Date"
+            }
+            </code>
+        </collection>
+        <collection name="userCardProgress">
+            <description>Cho tính năng SRS sau này</description>
+            <code>
+            {
+              "_id": "ObjectId",
+              "userId": "ObjectId (ref: 'users')",
+              "cardId": "ObjectId",
+              "lessonId": "ObjectId (ref: 'lessons')",
+              "interval": "Number (days)",
+              "easeFactor": "Number",
+              "nextReviewDate": "Date"
+            }
+            </code>
+        </collection>
+    </dataSchema>
+
+    <roadmap>
+        <title>III. Lộ trình MVP Chi tiết</title>
+        <mvp id="0.1" name="Hồ nước Riêng - The Creator's Sandbox">
+            <goal>Kiểm chứng giả thuyết cốt lõi nhất: "Liệu người dùng có muốn sử dụng công cụ của chúng ta để tạo ra một bài học cho chính họ không?".</goal>
+            <philosophy>Tập trung 100% vào trải nghiệm sáng tạo cá nhân. Chưa có tính năng cộng đồng.</philosophy>
+            <category name="Backend">
+                <task>Thiết lập server FastAPI, kết nối MongoDB (sử dụng Motor hoặc Beanie).</task>
+                <task>API xác thực người dùng: POST /api/auth/register, POST /api/auth/login.</task>
+                <task>API quản lý bài học (CRUD cho `lessons`): Chỉ cho phép người dùng thao tác trên bài học của chính họ.</task>
+                <task>API quản lý thẻ (CRUD cho `cards` lồng trong `lessons`).</task>
+                <task>API Trợ lý AI (nhẹ nhàng): POST /api/ai/suggest-example. Nhận một từ/câu, trả về một câu ví dụ.</task>
+            </category>
+            <category name="Frontend">
+                <task>Thiết lập dự án React/Next.js. Cấu hình state management (Context API hoặc Zustand là đủ cho MVP).</task>
+                <task>Xây dựng trang Đăng ký / Đăng nhập.</task>
+                <task>Xây dựng trang Dashboard cá nhân: Hiển thị danh sách các bài học do chính người dùng tạo.</task>
+                <task>Xây dựng LessonCreator.js: Component quan trọng nhất. Giao diện để tạo/sửa bài học và các thẻ bên trong nó. Tích hợp nút gọi AI.</task>
+                <task>Xây dựng LessonViewer.js để xem lại bài học đã tạo.</task>
+            </category>
+            <category name="DevOps">
+                <task>Thiết lập repo Git (GitHub/GitLab).</task>
+                <task>Cấu hình CI/CD cơ bản để tự động deploy lên Vercel và Render.</task>
+            </category>
+        </mvp>
+        <mvp id="0.2" name="Hồ Chung - The Communal Lake">
+            <goal>Kiểm chứng giả thuyết cộng đồng: "Người dùng có muốn khám phá và tương tác với nội dung do người khác tạo ra không?".</goal>
+            <philosophy>Mở ra không gian chung, nuôi dưỡng văn hóa "bọt biển".</philosophy>
+            <category name="Backend">
+                <task>API duyệt thư viện: GET /api/lessons (public, có phân trang).</task>
+                <task>API tìm kiếm bài học cơ bản (theo title, tags).</task>
+                <task>API cho Vòng lặp Phản hồi: POST /api/lessons/:id/feedback, GET /api/lessons/:id/feedback.</task>
+                <task>API cho tương tác: POST /api/lessons/:id/like.</task>
+            </category>
+            <category name="Frontend">
+                <task>Xây dựng trang CommunityLibrary.js: Hiển thị tất cả bài học công khai dưới dạng lưới (grid) hoặc danh sách. Tích hợp thanh tìm kiếm.</task>
+                <task>Cập nhật LessonViewer.js: Thêm khu vực hiển thị và gửi phản hồi/comment. Thêm nút "Like".</task>
+                <task>Cập nhật trang LessonCreator.js: Thêm chức năng cho phép người dùng "tag" bài học theo chủ đề và cấp độ CEFR.</task>
+                <task>Xây dựng trang Hồ sơ người dùng công khai (Public Profile): Hiển thị các bài học một người dùng đã đóng góp.</task>
+            </category>
+        </mvp>
+        <mvp id="0.3" name="Dòng chảy Hướng dẫn - The Guided Stream">
+            <goal>Kiểm chứng giả thuyết học tập: "Người dùng có thể xây dựng một lộ trình học hiệu quả từ nội dung cộng đồng, dựa trên khung sườn khoa học không?".</goal>
+            <philosophy>Thêm vào cấu trúc và khoa học, biến nội dung cộng đồng thành một công cụ học tập mạnh mẽ.</philosophy>
+            <category name="Backend">
+                <task>Triển khai Logic SRS: Viết thuật toán để tính nextReviewDate dựa trên câu trả lời của người dùng (đúng/sai, dễ/khó).</task>
+                <task>API hàng đợi học tập: GET /api/learn/queue (trả về các thẻ cần ôn tập hôm nay cho người dùng).</task>
+                <task>API cập nhật tiến độ: POST /api/learn/review (người dùng gửi kết quả ôn tập, backend cập nhật lại userCardProgress).</task>
+            </category>
+            <category name="Frontend">
+                <task>Xây dựng LearningSession.js: Giao diện học tập kiểu Anki. Hiển thị mặt trước của thẻ, người dùng bấm "Hiện đáp án", sau đó chọn độ khó.</task>
+                <task>Thêm nút "Thêm vào lộ trình học của tôi" vào các bài học trong CommunityLibrary.</task>
+                <task>Cập nhật trang Dashboard cá nhân: Thêm widget hiển thị "Bạn có X thẻ cần ôn tập hôm nay" và các thống kê học tập cơ bản.</task>
+            </category>
+        </mvp>
+    </roadmap>
+</developmentPlan>
