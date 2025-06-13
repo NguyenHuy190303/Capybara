@@ -16,6 +16,10 @@
             <database>MongoDB (với Motor hoặc Beanie ODM).</database>
             <reason>Cấu trúc linh hoạt của NoSQL rất phù hợp cho giai đoạn đầu, nơi mô hình dữ liệu có thể thay đổi. Đặc biệt tốt cho việc lưu trữ nội dung đa dạng do người dùng tạo.</reason>
         </item>
+        <item type="Vector Database (for RAG)">
+            <database>ChromaDB (for MVP)</database>
+            <reason>Mã nguồn mở, nhẹ và tích hợp liền mạch với hệ sinh thái AI của Python (LangChain, LangGraph). Lý tưởng cho việc phát triển nhanh các tính năng RAG. Có thể mở rộng hoặc thay thế sau này khi cần.</reason>
+        </item>
         <item type="Xác thực">
             <method>JSON Web Tokens (JWT)</method>
         </item>
